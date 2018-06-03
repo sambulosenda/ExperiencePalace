@@ -6,6 +6,8 @@ const user = require("./routes/api/users");
 const profiles = require("./routes/api/profiles");
 const posts = require("./routes/api/posts");
 
+const passport = require("passport");
+
 const app = express();
 
 //Body passer middleware
@@ -21,9 +23,11 @@ mongoose
   .then(() => console.log("MongoDB Connected"))
   .catch(err => console.log(err));
 
-app.get("/", (req, res) =>
-  res.send("heljQBA lo sjdafn asj jjodadjd amnnfjdn bulo")
-);
+//passort middlewear
+app.use(passport.initialize());
+
+//Passport config
+require("./config/passport")(passport);
 
 //use routes
 app.use("/api/user", user);
