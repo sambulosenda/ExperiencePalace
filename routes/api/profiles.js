@@ -50,15 +50,46 @@ router.post(
    if(req.body.handle)  profilefields.handle = req.body.handle;
    if(req.body.company) profilefields.company = req.body.company;
    if(req.body.website) profilefields.website = req.body.website;
-   if(req.body.location) profilefields.handle = req.body.location;
-   if(req.body.bio) profilefields.handle = req.body.bio;
-   if(req.body.status) profilefields.handle = req.body.status;
-   if(req.body.company) profilefields.handle = req.body.company;
-   if(req.body.company) profilefields.handle = req.body.company;
-   if(req.body.company) profilefields.handle = req.body.company;
-   if(req.body.company) profilefields.handle = req.body.company;
-  }
+   if(req.body.location) profilefields.location = req.body.location;
+   if(req.body.bio) profilefields.bio = req.body.bio;
+   if(req.body.status) profilefields.status = req.body.status;
+   if(req.body.githubusermame) profilefields.githubusermame = req.body.githubusermame;
 
+   //Skills split into array 
+   if(typeof req.bodyskills !== 'undefined'){
+     profilefields.skills = req.body.skills.split(',');
+   }
+   //Social
+   profilefields.social = {};
+   if(req.body.youtube) profilefields.youtube = req.body.youtube;
+   if(req.body.twitter) profilefields.twitter = req.body.twitter;
+   if(req.body.facebook) profilefields.facebook = req.body.facebook;
+   if(req.body.youtube) profilefields.youtube = req.body.youtube;
+   if(req.body.linkedin) profilefields.linkedin = req.body.linkedin;
+   if(req.body.instagram) profilefields.instagram = req.body.instagram;
+
+   Profile.findOne({ user: req.user.id})
+   .then(profile => {
+     if(profile){
+       //update
+       Profile.findOneAndUpdate(
+        {user: req.user.id},
+        {$set: profilefields},
+        {new : true}
+      ).then(profile => res.json(profile));
+      }else {
+        Profile.findOne({handle : profilefields.handle}).then(profile => {
+          if(profile){
+            errors.handle = "that handle already exists";
+            res.status(400).json(errors);
+          }
+
+          //save profile
+          new Profile(profilefields).save().then(profile => res.json(profile) );
+        });
+      }
+   });
+  }
 );
 module.exports = router;
 
