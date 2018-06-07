@@ -3,17 +3,21 @@ const router = express.Router();
 const passport = require("passport");
 const mongoose = require("mongoose");
 
-//lod validation 
-const validateProfileInput = require('../../validation/profile');
+//lod validation
+const validateProfileInput = require("../../validation/profile");
 
 // load profile model
 const Profile = require("../../models/Profile");
-const User = require('../../models/User');
+const User = require("../../models/User");
 
 //@routes Get api/profiles/test
 //@desc Test profiles route
 //@Acess Public
-router.get("/test", (req, res) => res.json({ msg: "Profile Works" }));
+router.get("/test", (req, res) =>
+  res.json({
+    msg: "Profile Works"
+  })
+);
 
 //@routes Get api/profiles/
 //@desc Get current users profile
@@ -21,11 +25,15 @@ router.get("/test", (req, res) => res.json({ msg: "Profile Works" }));
 
 router.get(
   "/",
-  passport.authenticate("jwt", { session: false }),
+  passport.authenticate("jwt", {
+    session: false
+  }),
   (req, res) => {
     const errors = {};
 
-    Profile.findOne({ user: req.user.id })
+    Profile.findOne({
+      user: req.user.id
+    })
       .then(profile => {
         if (!profile) {
           errors.noprofile = "There is no profile for this user";
@@ -43,62 +51,72 @@ router.get(
 
 router.post(
   "/",
-  passport.authenticate("jwt", { session: false }),
+  passport.authenticate("jwt", {
+    session: false
+  }),
   (req, res) => {
+    const { errors, isValid } = validateProfileInput(req.body);
 
-    const {errors, isValid} = validateProfileInput(req.body);
-
-    if(!isValid){
+    if (!isValid) {
       return res.status(400).json(errors);
     }
 
-   //Get fields 
-   const profilefields = {};
+    //Get fields
+    const profilefields = {};
+    profilefields.user = req.body.id;
+    if (req.body.handle) profilefields.handle = req.body.handle;
+    if (req.body.company) profilefields.company = req.body.company;
+    if (req.body.website) profilefields.website = req.body.website;
+    if (req.body.location) profilefields.location = req.body.location;
+    if (req.body.bio) profilefields.bio = req.body.bio;
+    if (req.body.status) profilefields.status = req.body.status;
+    if (req.body.githubusermame)
+      profilefields.githubusermame = req.body.githubusermame;
 
-   profilefields.user = req.body.id;
-   if(req.body.handle)  profilefields.handle = req.body.handle;
-   if(req.body.company) profilefields.company = req.body.company;
-   if(req.body.website) profilefields.website = req.body.website;
-   if(req.body.location) profilefields.location = req.body.location;
-   if(req.body.bio) profilefields.bio = req.body.bio;
-   if(req.body.status) profilefields.status = req.body.status;
-   if(req.body.githubusermame) profilefields.githubusermame = req.body.githubusermame;
+    //Skills split into array
+    if (typeof req.body.skills !== "undefined") {
+      profilefields.skills = req.body.skills.split(",");
+    }
+    //Social
+    profilefields.social = {};
+    if (req.body.youtube) profilefields.youtube = req.body.youtube;
+    if (req.body.twitter) profilefields.twitter = req.body.twitter;
+    if (req.body.facebook) profilefields.facebook = req.body.facebook;
+    if (req.body.youtube) profilefields.youtube = req.body.youtube;
+    if (req.body.linkedin) profilefields.linkedin = req.body.linkedin;
+    if (req.body.instagram) profilefields.instagram = req.body.instagram;
 
-   //Skills split into array 
-   if(typeof req.bodyskills !== 'undefined'){
-     profilefields.skills = req.body.skills.split(',');
-   }
-   //Social
-   profilefields.social = {};
-   if(req.body.youtube) profilefields.youtube = req.body.youtube;
-   if(req.body.twitter) profilefields.twitter = req.body.twitter;
-   if(req.body.facebook) profilefields.facebook = req.body.facebook;
-   if(req.body.youtube) profilefields.youtube = req.body.youtube;
-   if(req.body.linkedin) profilefields.linkedin = req.body.linkedin;
-   if(req.body.instagram) profilefields.instagram = req.body.instagram;
+    Profile.findOne({
+      user: req.user.id
+    }).then(profile => {
+      if (profile) {
+        //update
 
-   Profile.findOne({ user: req.user.id})
-   .then(profile => {
-     if(profile){
-       //update
-       Profile.findOneAndUpdate(
-        {user: req.user.id},
-        {$set: profilefields},
-        {new : true}
-      ).then(profile => res.json(profile));
-      }else {
-        Profile.findOne({handle : profilefields.handle}).then(profile => {
-          if(profile){
+        Profile.findOneAndUpdate(
+          {
+            user: req.user.id
+          },
+          {
+            $set: profilefields
+          },
+          {
+            new: true
+          }
+        ).then(profile => res.json(profile));
+      } else {
+        Profile.findOne({
+          handle: profilefields.handle
+        }).then(profile => {
+          if (profile) {
             errors.handle = "that handle already exists";
             res.status(400).json(errors);
           }
 
           //save profile
-          new Profile(profilefields).save().then(profile => res.json(profile) );
+          new Profile(profilefields).save().then(profile => res.json(profile));
         });
       }
-   });
+    });
   }
 );
 module.exports = router;
-

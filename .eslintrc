@@ -1,0 +1,7 @@
+{
+   "exdends" : ["react-app", "prettier"],
+   "plugins": [
+  "prettier"   
+   ]
+
+}
