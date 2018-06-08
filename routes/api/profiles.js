@@ -5,13 +5,15 @@ const passport = require('passport');
 
 // Load Validation
 const validateProfileInput = require('../../validation/profile');
-const validateExperienceInput = require('../../validation/experience');
-const validateEducationInput = require('../../validation/education');
+//const validateExperienceInput = require('../../validation/experience');
+//const validateEducationInput = require('../../validation/education');
 
 // Load Profile Model
 const Profile = require('../../models/Profile');
 // Load User Model
 const User = require('../../models/User');
+
+
 
 // @route   GET api/profile/test
 // @desc    Tests profile route
@@ -45,7 +47,6 @@ router.get(
 // @access  Public
 router.get('/all', (req, res) => {
   const errors = {};
-
   Profile.find()
     .populate('user', ['name', 'avatar'])
     .then(profiles => {
