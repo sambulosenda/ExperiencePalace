@@ -15,7 +15,7 @@ import { Link } from 'react-router-dom';
             <hr />
             <Link to="/register" className="btn btn-lg btn-info mr-2">Sign Up</Link>
             <Link to="/login" className="btn btn-lg btn-light">Login</Link>
-          </div>
+          </div> 
         </div>
       </div>
     </div>
