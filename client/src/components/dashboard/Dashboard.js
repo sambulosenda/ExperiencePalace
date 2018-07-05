@@ -3,10 +3,9 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { getCurrentProfile } from '../../actions/profileActions';
 
-class Dashboad extends Component {
-
-  componentDidMount(){
-    this.props.getCurrentProfile;
+class Dashboard extends Component {
+  componentDidMount() {
+    this.props.getCurrentProfile();
   }
 
   render() {
@@ -18,4 +17,4 @@ class Dashboad extends Component {
   }
 }
 
-export default connect(null, {getCurrentProfile})(Dashboad);
+export default connect(null, { getCurrentProfile })(Dashboard);
