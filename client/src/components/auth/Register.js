@@ -1,19 +1,18 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { withRouter } from "react-router-dom";
-
-import { connect } from "react-redux";
-import { registerUser } from "../../actions/authActions";
-import TextFieldGroup from "../common/TextFieldGroup";
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { registerUser } from '../../actions/authActions';
+import TextFieldGroup from '../common/TextFieldGroup';
 
 class Register extends Component {
   constructor() {
     super();
     this.state = {
-      name: "",
-      email: "",
-      password: "",
-      password2: "",
+      name: '',
+      email: '',
+      password: '',
+      password2: '',
       errors: {}
     };
 
@@ -23,7 +22,7 @@ class Register extends Component {
 
   componentDidMount() {
     if (this.props.auth.isAuthenticated) {
-      this.props.history.push("/dashboard");
+      this.props.history.push('/dashboard');
     }
   }
 
@@ -32,6 +31,7 @@ class Register extends Component {
       this.setState({ errors: nextProps.errors });
     }
   }
+
   onChange(e) {
     this.setState({ [e.target.name]: e.target.value });
   }
@@ -47,15 +47,11 @@ class Register extends Component {
     };
 
     this.props.registerUser(newUser, this.props.history);
-
-    //axios
-    //.post('/api/user/register', newUser)
-    //.then(res => console.log(res.data))
-    // .catch(err => this.setState({ errors: err.response.data }));
-    //}
   }
+
   render() {
     const { errors } = this.state;
+
     return (
       <div className="register">
         <div className="container">
@@ -66,7 +62,6 @@ class Register extends Component {
                 Create your DevConnector account
               </p>
               <form noValidate onSubmit={this.onSubmit}>
-
                 <TextFieldGroup
                   placeholder="Name"
                   name="name"
@@ -74,16 +69,15 @@ class Register extends Component {
                   onChange={this.onChange}
                   error={errors.name}
                 />
-
                 <TextFieldGroup
                   placeholder="Email"
                   name="email"
+                  type="email"
                   value={this.state.email}
                   onChange={this.onChange}
                   error={errors.email}
-                  info="This site uses gravata email for your image"
+                  info="This site uses Gravatar so if you want a profile image, use a Gravatar email"
                 />
-
                 <TextFieldGroup
                   placeholder="Password"
                   name="password"
@@ -92,16 +86,14 @@ class Register extends Component {
                   onChange={this.onChange}
                   error={errors.password}
                 />
-
                 <TextFieldGroup
-                  placeholder="Password"
+                  placeholder="Confirm Password"
                   name="password2"
-                  type="password2"
+                  type="password"
                   value={this.state.password2}
                   onChange={this.onChange}
                   error={errors.password2}
                 />
-
                 <input type="submit" className="btn btn-info btn-block mt-4" />
               </form>
             </div>
@@ -123,7 +115,4 @@ const mapStateToProps = state => ({
   errors: state.errors
 });
 
-export default connect(
-  mapStateToProps,
-  { registerUser }
-)(withRouter(Register));
+export default connect(mapStateToProps, { registerUser })(withRouter(Register));

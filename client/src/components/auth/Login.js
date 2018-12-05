@@ -11,16 +11,18 @@ class Login extends Component {
       email: '',
       password: '',
       errors: {}
-      //
     };
+
     this.onChange = this.onChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
   }
+
   componentDidMount() {
     if (this.props.auth.isAuthenticated) {
       this.props.history.push('/dashboard');
     }
   }
+
   componentWillReceiveProps(nextProps) {
     if (nextProps.auth.isAuthenticated) {
       this.props.history.push('/dashboard');
@@ -30,12 +32,15 @@ class Login extends Component {
       this.setState({ errors: nextProps.errors });
     }
   }
+
   onSubmit(e) {
     e.preventDefault();
+
     const userData = {
       email: this.state.email,
       password: this.state.password
     };
+
     this.props.loginUser(userData);
   }
 
@@ -45,6 +50,7 @@ class Login extends Component {
 
   render() {
     const { errors } = this.state;
+
     return (
       <div className="login">
         <div className="container">
@@ -55,25 +61,23 @@ class Login extends Component {
                 Sign in to your DevConnector account
               </p>
               <form onSubmit={this.onSubmit}>
-
                 <TextFieldGroup
-                placeholder ="Email Address"
-                name="email"
-                type="email"
-                value={this.state.email}
-                onChange={this.onChange}
-                error={errors.email}
+                  placeholder="Email Address"
+                  name="email"
+                  type="email"
+                  value={this.state.email}
+                  onChange={this.onChange}
+                  error={errors.email}
                 />
 
                 <TextFieldGroup
-                placeholder ="Password"
-                name="password"
-                type="password"
-                value={this.state.password}
-                onChange={this.onChange}
-                error={errors.password}
+                  placeholder="Password"
+                  name="password"
+                  type="password"
+                  value={this.state.password}
+                  onChange={this.onChange}
+                  error={errors.password}
                 />
-
                 <input type="submit" className="btn btn-info btn-block mt-4" />
               </form>
             </div>
@@ -95,7 +99,4 @@ const mapStateToProps = state => ({
   errors: state.errors
 });
 
-export default connect(
-  mapStateToProps,
-  { loginUser }
-)(Login);
+export default connect(mapStateToProps, { loginUser })(Login);
